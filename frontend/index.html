@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Home</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+          integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+</head>
+<body>
+    <header>
+        <div class="container" id="navigation">
+            <nav>
+                <ul>
+                    <li><a href="#">Home</a></li>
+                    <li><a href="#">About</a></li>
+                    <li><a href="#">Search</a></li>
+                    <li><a href="#">Sources</a> <!-- Note- need to leave href as # -->
+                        <ul>
+                            <li><a href="#">NYT</a></li>
+                            <li><a href="#">WSJ</a></li>
+                            <li><a href="#">AP</a></li>
+                        </ul>
+
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+
+
+<section class="container">
+    <ul class="search-results">
+        {{range .Results}}
+        <li class="news-article">
+            <div>
+                <h3>{{.Results.Title}}</h3>
+                <p class="description">{{.Results.Abstract}}</p>
+                <div class="metadata">
+                    <p>{{.Results.Section}}</p>
+                    <time>{{.Results.PublishedDate}}</time>
+                </div>
+            </div>
+        </li>
+        {{ end }}
+    </ul>
+
+
+</section>
+</body>
+</html>
