@@ -1,25 +1,41 @@
 package main
 
-
 import (
-	handlers "./handlers"
+	"./constants"
+	"./handlers"
+	"flag"
+	"fmt"
 	log "github.com/sirupsen/logrus"
 	"net/http"
 	"os"
 )
 
-
-
 func main() {
+	log.SetLevel(log.DebugLevel)
+	// Format of command line arguments: NYTAPI NEWSAPI TODO: LOGLVL
+	// Cmmnd Line Flags to perform particular actions
+	flag.StringVar(&constants.NytKeyPtr, "nyt", "LAyAA8ZUvR0hAiYkNtOYNLXoZH8IG6VI",
+		"nyt api key")
+
+	// TODO: have a set of universal service and section
+	flag.StringVar(&constants.NewsKeyPtr, "news", "acd370db8778478bbe0e2b56e4a1af9c",
+		"NewsAPI key")
+
+	tail := flag.Args()
+	flag.Parse()
+
+	log.Infof("NYT Key: %v \n News Key: %v \n",
+		constants.NytKeyPtr, constants.NewsKeyPtr)
+	fmt.Printf("these are the trailing arguments: %v\n", tail)
+
 	// TODO: create log file
 	log.SetOutput(os.Stdout)
 	log.Info("Starting program...")
 
 	port := os.Getenv("PORT")
-	if port == ""{
+	if port == "" {
 		port = "8080"
 	}
-
 	mux := http.NewServeMux()
 
 	// Declare the static file directory
@@ -31,50 +47,8 @@ func main() {
 	log.Info("Listening on port ", port)
 	http.ListenAndServe(":"+port, mux)
 
-
 	//err := runnyt()
 	//if err!= nil {
 	//	os.Exit(1)
 	//}
 }
-/*
-// function to get nyt data
-func runnyt() error {
-
-	// Format of command line arguments: NEWSSITE SERVICE SECTION(home, arts, finance, etc) TODO: LOGLVL
-
-	// Cmmnd Line Flags to perform particular actions
-	newssitePtr := flag.String("site", "nyt",
-		"site on which to perform action")
-
-	// TODO: have a set of universal service and section
-	servicePtr := flag.String("service", "top",
-		"type of service desired from specified news site")
-	sectionPtr := flag.String("section", "home",
-		"section (arts, finance, etc) of news to get results from")
-	tail := flag.Args()
-	flag.Parse()
-
-	log.Infof("SITE: %v \t\t SERVICE: %v \t\t SECTION: %v",
-		*newssitePtr, *servicePtr, *sectionPtr)
-	fmt.Printf("these are the trailing arguments: %v\n", tail)
-
-	var nytdata *NYTResponseHeader
-	var nyterr error
-	if strings.ToLower(*newssitePtr) == "nyt" {
-		nytdata, nyterr = nytapiconnect(*sectionPtr)
-		if nyterr != nil {
-			os.Exit(1)
-		}
-		fmt.Println("number of results: ", nytdata.NumResults)
-		//for index, result := range nytdata.Results {
-		//	fmt.Printf("%d %v \n", index, result.Title)
-		//}
-	} else {
-		fmt.Println("invalid site")
-	}
-
-	nytoutputtofile(nytdata)
-	return nil
-}
-*/

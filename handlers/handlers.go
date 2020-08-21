@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"../constants"
 	"../newssources"
 	"encoding/json"
 	"fmt"
@@ -12,16 +13,25 @@ import (
 	"strconv"
 )
 
-
-//  points to a template definition
-var tpl = template.Must(template.ParseFiles("/Users/arnav/gocode/GoLand/newsAggregator/frontend/search.html"))
-
 func IndexHandler(w http.ResponseWriter, r *http.Request) {
-	tpl.Execute(w, nil)
+	//  points to a template definition
+	var tpl = template.Must(
+		template.ParseFiles("/Users/arnav/gocode/GoLand/newsAggregator/frontend/index.html"))
+
+	nytdata, err := newssources.Nytapiconnect(constants.NytKeyPtr, "home")
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write([]byte("Internal server error"))
+		log.Error("Connection to NYT API failed")
+	}
+	tpl.Execute(w, *nytdata)
 }
 
 // put user search's through NewsAPI
 func SearchHandler(w http.ResponseWriter, r *http.Request) {
+	//  points to a template definition
+	var tpl = template.Must(
+		template.ParseFiles("/Users/arnav/gocode/GoLand/newsAggregator/frontend/search.html"))
 	u, err := url.Parse(r.URL.String())
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
@@ -56,8 +66,15 @@ func SearchHandler(w http.ResponseWriter, r *http.Request) {
 	// number of results NewsAPI will return in response
 	pageSize := 20
 
-	endpoint := fmt.Sprintf("https://newsapi.org/v2/everything?q=%s&pageSize=%d&page=%d&apiKey=%s&sortBy=publishedAt&language=en",
-		url.QueryEscape(search.SearchKey), pageSize, search.NextPage, newssources.NEWSAPI)
+	var endpoint string
+	if searchKey == "" {
+		endpoint = fmt.Sprintf("https://newsapi.org/v2/top-headlines?category=general&pageSize=%d&page=%d&apiKey=%s",
+			pageSize, search.NextPage, newssources.NEWSAPI)
+	} else {
+		endpoint = fmt.Sprintf("https://newsapi.org/v2/everything?q=%s&pageSize=%d&page=%d&apiKey=%s&sortBy=publishedAt&language=en",
+			url.QueryEscape(search.SearchKey), pageSize, search.NextPage, newssources.NEWSAPI)
+
+	}
 	resp, err := http.Get(endpoint)
 	log.Info("Making GET request to NewsAPI")
 	if err != nil {
@@ -98,4 +115,3 @@ func SearchHandler(w http.ResponseWriter, r *http.Request) {
 		log.Errorf("Failed to execute search template: ", err)
 	}
 }
-
