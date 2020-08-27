@@ -14,11 +14,10 @@ func main() {
 	log.SetLevel(log.DebugLevel)
 	// Format of command line arguments: NYTAPI NEWSAPI TODO: LOGLVL
 	// Cmmnd Line Flags to perform particular actions
-	flag.StringVar(&constants.NytKeyPtr, "nyt", "LAyAA8ZUvR0hAiYkNtOYNLXoZH8IG6VI",
+	flag.StringVar(&constants.NytKeyPtr, "nyt", "",
 		"nyt api key")
 
-	// TODO: have a set of universal service and section
-	flag.StringVar(&constants.NewsKeyPtr, "news", "acd370db8778478bbe0e2b56e4a1af9c",
+	flag.StringVar(&constants.NewsKeyPtr, "news", "",
 		"NewsAPI key")
 
 	tail := flag.Args()
@@ -27,6 +26,10 @@ func main() {
 	log.Infof("NYT Key: %v \n News Key: %v \n",
 		constants.NytKeyPtr, constants.NewsKeyPtr)
 	fmt.Printf("these are the trailing arguments: %v\n", tail)
+	if constants.NytKeyPtr == "" || constants.NewsKeyPtr == "" {
+		log.Fatal("Do not have necessary API keys")
+		os.Exit(1)
+	}
 
 	// TODO: create log file
 	log.SetOutput(os.Stdout)
@@ -47,8 +50,4 @@ func main() {
 	log.Info("Listening on port ", port)
 	http.ListenAndServe(":"+port, mux)
 
-	//err := runnyt()
-	//if err!= nil {
-	//	os.Exit(1)
-	//}
 }

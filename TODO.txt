@@ -1,0 +1,4 @@
+
+- Collect data from at least 2 other sources and put them in 3 columnns on home page
+- collect facet data and store in influx
+- ^ anaylsis in grafana

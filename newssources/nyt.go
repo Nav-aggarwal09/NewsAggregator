@@ -54,8 +54,20 @@ type NYTResult struct {
 	DesFacet      []string `json:"des_facet"`
 	OrgFacet      []string `json:"org_facet"`
 	PerFacet      []string `json:"per_facet"`
+	LoMedia       []Media  `json:"multimedia"`
 	// TODO: Save information from multimedia to display on front end
 
+}
+
+type Media struct {
+	URL       string `json:"url"`
+	Format    string `json:"format"`
+	Height    int    `json:"height"`
+	Width     int    `json:"width"`
+	Type      string `json:"type"`
+	Subtype   string `json:"subtype"`
+	Caption   string `json:"caption"`
+	Copyright string `json:"copyright"`
 }
 
 // Find takes a slice and looks for an element in it. If found it will
@@ -67,20 +79,6 @@ func FindString(slice []string, val string) (int, bool) {
 		}
 	}
 	return -1, false
-}
-
-// function to get nyt data
-func runnyt(apikey, section string) error {
-
-	var nytdata *NYTResponseHeader
-	var nyterr error
-	nytdata, nyterr = Nytapiconnect(apikey, section)
-	if nyterr != nil {
-		os.Exit(1)
-	}
-	log.Debug(" Number of returned NYT results are: ", nytdata.NumResults)
-	nytoutputtofile(nytdata)
-	return nil
 }
 
 // connect to NYT API
