@@ -8,6 +8,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
+	"time"
 )
 
 //type NYTResponse struct {
@@ -54,8 +55,20 @@ type NYTResult struct {
 	DesFacet      []string `json:"des_facet"`
 	OrgFacet      []string `json:"org_facet"`
 	PerFacet      []string `json:"per_facet"`
+	LoMedia       []Media  `json:"multimedia"`
 	// TODO: Save information from multimedia to display on front end
 
+}
+
+type Media struct {
+	URL       string `json:"url"`
+	Format    string `json:"format"`
+	Height    int    `json:"height"`
+	Width     int    `json:"width"`
+	Type      string `json:"type"`
+	Subtype   string `json:"subtype"`
+	Caption   string `json:"caption"`
+	Copyright string `json:"copyright"`
 }
 
 // Find takes a slice and looks for an element in it. If found it will
@@ -115,6 +128,8 @@ func Nytapiconnect(apikey, section string) (*NYTResponseHeader, error) {
 
 	var responseObject NYTResponseHeader
 	json.Unmarshal(responsedata, &responseObject)
+	responseObject.convertTimes()
+	log.Info("Published Dates have been formatted")
 	log.Debug(" Number of NYT returned results: ", len(responseObject.Results))
 	return &responseObject, nil
 }
@@ -145,10 +160,20 @@ func nytparseResults(header NYTResponseHeader) ([]NYTResult, error) {
 
 	for i := 0; i < header.NumResults; i++ {
 		resultdata = append(resultdata, header.Results[i])
+
 	}
 
 	log.Info(" Successfully parsed data from NYT")
 	log.Debug(" Number of results: ", header.NumResults)
 
 	return resultdata, nil
+}
+
+func (header *NYTResponseHeader) convertTimes() {
+	for i := 0; i < header.NumResults; i++ {
+		t, _ := time.Parse(time.RFC3339, header.Results[i].PublishedDate)
+		formattedDate := t.Format("January 2, 2006")
+		header.Results[i].PublishedDate = formattedDate
+	}
+
 }

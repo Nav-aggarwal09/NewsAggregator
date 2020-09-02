@@ -16,7 +16,7 @@ import (
 func IndexHandler(w http.ResponseWriter, r *http.Request) {
 	//  points to a template definition
 	var tpl = template.Must(
-		template.ParseFiles("/Users/arnav/gocode/GoLand/newsAggregator/frontend/index.html"))
+		template.ParseFiles("/Users/nikhilaggarwal/go/src/NewsAggregator/frontend/index.html"))
 
 	nytdata, err := newssources.Nytapiconnect(constants.NytKeyPtr, "home")
 	if err != nil {
@@ -31,7 +31,7 @@ func IndexHandler(w http.ResponseWriter, r *http.Request) {
 func SearchHandler(w http.ResponseWriter, r *http.Request) {
 	//  points to a template definition
 	var tpl = template.Must(
-		template.ParseFiles("/Users/arnav/gocode/GoLand/newsAggregator/frontend/search.html"))
+		template.ParseFiles("/Users/nikhilaggarwal/go/src/NewsAggregator/frontend/search.html"))
 	u, err := url.Parse(r.URL.String())
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
