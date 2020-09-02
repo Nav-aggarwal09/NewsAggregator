@@ -82,20 +82,6 @@ func FindString(slice []string, val string) (int, bool) {
 	return -1, false
 }
 
-// function to get nyt data
-func runnyt(apikey, section string) error {
-
-	var nytdata *NYTResponseHeader
-	var nyterr error
-	nytdata, nyterr = Nytapiconnect(apikey, section)
-	if nyterr != nil {
-		os.Exit(1)
-	}
-	log.Debug(" Number of returned NYT results are: ", nytdata.NumResults)
-	nytoutputtofile(nytdata)
-	return nil
-}
-
 // connect to NYT API
 func Nytapiconnect(apikey, section string) (*NYTResponseHeader, error) {
 	// TODO: differentiate between types of calls to be made
