@@ -114,7 +114,7 @@ func Nytapiconnect(apikey, section string) (*NYTResponseHeader, error) {
 
 	var responseObject NYTResponseHeader
 	json.Unmarshal(responsedata, &responseObject)
-	responseObject.convertTimes()
+	//responseObject.convertTimes()
 	log.Info("Published Dates have been formatted")
 	log.Debug(" Number of NYT returned results: ", len(responseObject.Results))
 	return &responseObject, nil
@@ -155,11 +155,10 @@ func nytparseResults(header NYTResponseHeader) ([]NYTResult, error) {
 	return resultdata, nil
 }
 
-func (header *NYTResponseHeader) convertTimes() {
-	for i := 0; i < header.NumResults; i++ {
-		t, _ := time.Parse(time.RFC3339, header.Results[i].PublishedDate)
+func (header *NYTResponseHeader) FormatDate() {
+	for index, _ := range header.Results {
+		t, _ := time.Parse(time.RFC3339, header.Results[index].PublishedDate)
 		formattedDate := t.Format("January 2, 2006")
-		header.Results[i].PublishedDate = formattedDate
+		header.Results[index].PublishedDate = formattedDate
 	}
-
 }

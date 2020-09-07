@@ -18,13 +18,14 @@ func IndexHandler(w http.ResponseWriter, r *http.Request) {
 	var tpl = template.Must(
 		template.ParseFiles("/Users/nikhilaggarwal/go/src/NewsAggregator/frontend/index.html"))
 
-	nytdata, err := newssources.Nytapiconnect(constants.NytKeyPtr, "home")
+	// TODO: DELETE nyt line BELOW AND PASS INDEX INFO TO EXECUTE
+	indexdata, err := IndexPackager(constants.NytKeyPtr)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte("Internal server error"))
-		log.Error("Connection to NYT API failed")
+		log.Error("Gathering index info failed")
 	}
-	tpl.Execute(w, *nytdata)
+	tpl.Execute(w, indexdata)
 }
 
 // put user search's through NewsAPI

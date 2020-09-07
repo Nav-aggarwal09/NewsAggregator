@@ -4,6 +4,7 @@ import (
 	"github.com/PuerkitoBio/goquery"
 	log "github.com/sirupsen/logrus"
 	"net/http"
+	"time"
 )
 
 type App struct {
@@ -24,7 +25,7 @@ type APArticle struct {
 	PhotoURL string
 }
 
-func APHome(url string) APResponseHeader {
+func APHome(url string) (*APResponseHeader, error) {
 	response, err := http.Get(url)
 	if err != nil {
 		log.Fatal("failed to get response from home: ", err)
@@ -34,6 +35,7 @@ func APHome(url string) APResponseHeader {
 	document, err := goquery.NewDocumentFromReader(response.Body)
 	if err != nil {
 		log.Fatal("Error loading HTTP response body. ", err)
+		return nil, err
 	}
 
 	//This seems like it works??
@@ -102,6 +104,14 @@ func APHome(url string) APResponseHeader {
 		articles = append(articles, tempArticle)
 	}
 
-	return APResponseHeader{NumResults: len(articles), Results: articles}
+	return &APResponseHeader{NumResults: len(articles), Results: articles}, nil
 
+}
+
+func (header *APResponseHeader) FormatDate() {
+	for index, _ := range header.Results {
+		t, _ := time.Parse(time.RFC3339, header.Results[index].Time)
+		formattedDate := t.Format("January 2, 2006")
+		header.Results[index].Time = formattedDate
+	}
 }
