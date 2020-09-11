@@ -1,4 +1,10 @@
 
-- Collect data from at least 2 other sources and put them in 3 columnns on home page
-- collect facet data and store in influx
-- ^ anaylsis in grafana
+
+1) PostgreSQL database with users and news articles
+  1a) Have signup.html post data to db
+  1b) Authentication of login.html w db
+  1c) Save articles
+
+2) Flesh out website w about page, allow user "blog posts", etc
+3) Cross reference trending Twitter hashtags w news articles.
+  3a) See how correlated trending on social media (?)
