@@ -5,6 +5,9 @@ News Aggregator that pulls news from reliable sources
 after downloading the project, run main.go from the command line/Terminal and supply a NYT API key and a NewsAPI key. The command should look like this:
 `go run main.go -nyt XXXX -news XXXX`
 
+Or alternatively you can build main.go and then just run 
+`./main -nyt XXXX -news XXXX` 
+
 ## Overview of Directories & Files
 Giving a few notes on each directory in the project and noteworthy aspects of particular files...
 
